@@ -1,0 +1,7 @@
+FROM _SOURCE_
+
+RUN apk update && apk add ca-certificates
+
+COPY ca/* /usr/local/share/ca-certificates/
+
+RUN update-ca-certificates

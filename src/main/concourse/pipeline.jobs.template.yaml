@@ -1,0 +1,82 @@
+- name: _FLATNAME_-_TAG_-red
+  public: true
+  serial: true
+  plan:
+  - get: _FLATNAME_-_TAG_-image
+    trigger: true
+  - get: ca-src
+    trigger: true
+    passed: [certificates-unit]
+  - get: certificates
+    trigger: true
+    passed: [certificates-unit]
+  - task: test
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: _NAME_
+          tag: _TAG_
+      inputs:
+      - name: ca-src
+      - name: certificates
+      run:
+        path: ca-src/src/test/sh/test-red.sh
+        args:
+        - -install
+
+- name: _FLATNAME_-_TAG_-build
+  public: true
+  serial: true
+  plan:
+  - get: _FLATNAME_-_TAG_-image
+    trigger: true
+    passed: [_FLATNAME_-_TAG_-red]
+  - get: ca-src
+    trigger: true
+    passed: [certificates-unit,_FLATNAME_-_TAG_-red]
+  - get: certificates
+    trigger: true
+    passed: [certificates-unit,_FLATNAME_-_TAG_-red]
+  - task: dockerfile
+    file: ca-src/src/main/ci/build-docker.yaml
+    params:
+      IMAGE: _NAME_
+      TAG: _TAG_
+      FLAVOR: _FLAVOR_
+  - put: addca-_FLATNAME_-_TAG_-image
+    params:
+      build: assembly
+
+- name: addca-_FLATNAME_-_TAG_-green
+  public: true
+  serial: true
+  plan:
+  - get: addca-_FLATNAME_-_TAG_-image
+    trigger: true
+    passed: [_FLATNAME_-_TAG_-build]
+  - get: ca-src
+    trigger: true
+    passed: [certificates-unit,_FLATNAME_-_TAG_-build]
+  - get: certificates
+    trigger: true
+    passed: [certificates-unit,_FLATNAME_-_TAG_-build]
+  - task: test
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          username: {{docker-registry-username}}
+          password: {{docker-registry-password}}
+          repository: _PREFIX__NAME_
+          tag: _TAG_
+      inputs:
+      - name: ca-src
+      - name: certificates
+      run:
+        path: ca-src/src/test/sh/test-green.sh
+        args:
+        - -install
+

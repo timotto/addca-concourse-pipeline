@@ -1,0 +1,14 @@
+- name: _FLATNAME_-_TAG_-image
+  type: docker-image
+  source:
+    repository: _NAME_
+    tag: _TAG_
+
+- name: addca-_FLATNAME_-_TAG_-image
+  type: docker-image
+  source:
+    username: {{docker-registry-username}}
+    password: {{docker-registry-password}}
+    repository: _PREFIX__NAME_
+    tag: _TAG_
+

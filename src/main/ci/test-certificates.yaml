@@ -1,0 +1,12 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+inputs:
+- name: ca-src
+- name: certificates
+run:
+  path: ca-src/src/test/sh/test-certificates.sh
+  args:
+  - -install

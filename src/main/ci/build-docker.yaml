@@ -1,0 +1,23 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+params:
+  IMAGE: iamge-name
+  TAG: latest
+  FLAVOR: alpine
+
+inputs:
+- name: ca-src
+- name: certificates
+outputs: 
+- name: assembly
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    sh ca-src/src/main/sh/build-dockerfile.sh > assembly/Dockerfile
+    mkdir -p assembly/ca
+    cp -R certificates/src/main/*.crt assembly/ca

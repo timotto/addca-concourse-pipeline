@@ -1,0 +1,3 @@
+alpine latest alpine
+openjdk latest debian
+centos latest rhel

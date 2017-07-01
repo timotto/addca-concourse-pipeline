@@ -1,0 +1,123 @@
+jobs:
+- name: docker-images-unit
+  public: true
+  serial: true
+  plan:
+  - get: ca-src
+    trigger: true
+  - get: docker-images
+    trigger: true
+  - task: test
+    file: ca-src/src/main/ci/test-docker-images.yaml
+
+- name: build-pipeline
+  public: true
+  serial: true
+  plan:
+  - get: ca-src
+    trigger: true
+    passed: [docker-images-unit]
+  - get: docker-images
+    trigger: true
+    passed: [docker-images-unit]
+  - task: build-pipeline
+    file: ca-src/src/main/ci/build-pipeline.yaml
+    params:
+      prefix: {{docker-registry-prefix}}
+  - task: build-secrets
+    file: ca-src/src/main/ci/build-secrets.yaml
+    params:
+      git_private_key: {{git-private-key}}
+      docker_images_git: {{docker-images-git}}
+      certificates_git: {{certificates-git}}
+      docker_registry_username: {{docker-registry-username}}
+      docker_registry_password: {{docker-registry-password}}
+      docker_registry_prefix: {{docker-registry-prefix}}
+      concourse_pipeline: {{concourse-pipeline}}
+      concourse_target: {{concourse-target}}
+      concourse_insecure: {{concourse-insecure}}
+      concourse_team: {{concourse-team}}
+      concourse_username: {{concourse-username}}
+      concourse_password: {{concourse-password}}
+
+  - task: debug
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: alpine
+      inputs: 
+      - name: pipeline-output
+      - name: secrets-output
+      run:
+        path: sh
+        args:
+          - -exc
+          - |
+            find .
+            set
+            cat pipeline-output/pipeline.yaml
+            cat secrets-output/secrets.yaml
+
+  - put: addca-pipeline
+    params:
+      pipelines:
+      - name: {{concourse-pipeline}}
+        team: {{concourse-team}}
+        config_file: pipeline-output/pipeline.yaml
+        vars_files:
+        - secrets-output/secrets.yaml
+
+- name: certificates-unit
+  public: true
+  serial: true
+  plan:
+  - get: ca-src
+    trigger: true
+  - get: certificates
+    trigger: true
+  - task: test
+    file: ca-src/src/main/ci/test-certificates.yaml
+
+_JOBS_
+
+resources:
+- name: ca-src
+  type: git
+  source:
+    uri: https://github.com/timotto/addca-concourse-pipeline.git
+    branch: master
+
+- name: docker-images
+  type: git
+  source:
+    uri: {{docker-images-git}}
+    branch: master
+    private_key: {{git-private-key}}
+
+- name: certificates
+  type: git
+  source:
+    uri: {{certificates-git}}
+    branch: master
+    private_key: {{git-private-key}}
+
+- name: addca-pipeline
+  type: concourse-pipeline
+  source:
+    target: {{concourse-target}}
+    insecure: {{concourse-insecure}}
+    teams:
+    - name: {{concourse-team}}
+      username: {{concourse-username}}
+      password: {{concourse-password}}
+
+_RESOURCES_
+
+resource_types:
+- name: concourse-pipeline
+  type: docker-image
+  source:
+    repository: robdimsdale/concourse-pipeline-resource
+    tag: latest-final

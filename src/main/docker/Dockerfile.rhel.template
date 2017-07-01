@@ -1,0 +1,5 @@
+FROM _SOURCE_
+
+COPY ca/* /etc/pki/ca-trust/source/anchors/
+
+RUN update-ca-trust
