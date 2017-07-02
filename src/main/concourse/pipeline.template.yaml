@@ -1,7 +1,7 @@
 jobs:
 - name: docker-images-unit
   public: true
-  serial_groups: [ca-src,docker-images]
+  serial: true
   plan:
   - aggregate:
     - get: ca-src
@@ -13,7 +13,7 @@ jobs:
 
 - name: build-pipeline
   public: true
-  serial_groups: [ca-src,docker-images]
+  serial: true
   plan:
   - aggregate:
     - get: ca-src
@@ -55,7 +55,7 @@ jobs:
 
 - name: certificates-unit
   public: true
-  serial_groups: [ca-src,certificates]
+  serial: true
   plan:
   - aggregate:
     - get: ca-src
