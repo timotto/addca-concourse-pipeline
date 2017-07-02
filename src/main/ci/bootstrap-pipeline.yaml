@@ -1,0 +1,13 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+inputs:
+- name: ca-src
+outputs:
+- name: bootstrap-output
+run:
+  path: ca-src/src/main/sh/bootstrap.sh
+  args:
+  - bootstrap-output
