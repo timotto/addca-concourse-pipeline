@@ -40,26 +40,6 @@ jobs:
       concourse_username: {{concourse-username}}
       concourse_password: {{concourse-password}}
 
-  - task: debug
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: alpine
-      inputs: 
-      - name: pipeline-output
-      - name: secrets-output
-      run:
-        path: sh
-        args:
-          - -exc
-          - |
-            find .
-            set
-            cat pipeline-output/pipeline.yaml
-            cat secrets-output/secrets.yaml
-
   - put: addca-pipeline
     params:
       pipelines:
