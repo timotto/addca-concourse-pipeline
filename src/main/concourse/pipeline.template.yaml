@@ -60,6 +60,7 @@ jobs:
   - aggregate:
     - get: ca-src
       trigger: true
+      passed: [build-pipeline]
     - get: certificates
       trigger: true
   - task: test
