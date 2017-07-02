@@ -8,13 +8,11 @@ Another required git repository manages a single text file with a list of docker
 
 ## Setup
 
-Create the two required git repositories. Then run the shell script "src/main/sh/bootstrap.sh". It will create the files "build/pipeline.yaml" as well as "build/secrets.yaml" with the latter one being a copy of "secrets.example.yaml". Modify the created file "build/secrets.yaml" to match your environment. It will not be overwritten if you run "bootstrap.sh" again.
+Create the two required git repositories as well as an SSH key to access them. 
 
-Assuming you configured "build/secrets.yaml" for a concourse pipeline named "addca" with a fly target "target" run
+Create a copy of "secrets.example.yaml" and modify it to match your environment.
 
-fly -t target set-pipeline -p addca -c build/pipeline.yaml -l build/secrets.yaml
-
-to bootstrap the pipeline. It will listen on the git repositories and add more jobs as docker images are added to the "docker-images.txt" file in the docker images git repository.
+Start the pipeline by setting the bootstrap.pipeline.yaml file. The pipeline will execute the bootstrap-pipeline.yaml task, which builds the initial empty pipeline using the bootstrap.sh script. Afterwards the pipeline will re-set itself to the created pipeline. This new pipeline will be able to check the configured git repositories and grow by itself.
 
 ## Setup-and-Forget
 
