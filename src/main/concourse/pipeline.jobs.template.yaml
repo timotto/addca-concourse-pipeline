@@ -1,15 +1,16 @@
 - name: _FLATNAME_-_TAG_-red
   public: true
-  serial: true
+  serial_groups: [ca-src,certificates]
   plan:
-  - get: _FLATNAME_-_TAG_-image
-    trigger: true
-  - get: ca-src
-    trigger: true
-    passed: [certificates-unit]
-  - get: certificates
-    trigger: true
-    passed: [certificates-unit]
+  - aggregate:
+    - get: _FLATNAME_-_TAG_-image
+      trigger: true
+    - get: ca-src
+      trigger: true
+      passed: [certificates-unit]
+    - get: certificates
+      trigger: true
+      passed: [certificates-unit]
   - task: test
     config:
       platform: linux
@@ -28,17 +29,18 @@
 
 - name: _FLATNAME_-_TAG_-build
   public: true
-  serial: true
+  serial_groups: [ca-src,certificates]
   plan:
-  - get: _FLATNAME_-_TAG_-image
-    trigger: true
-    passed: [_FLATNAME_-_TAG_-red]
-  - get: ca-src
-    trigger: true
-    passed: [certificates-unit,_FLATNAME_-_TAG_-red]
-  - get: certificates
-    trigger: true
-    passed: [certificates-unit,_FLATNAME_-_TAG_-red]
+  - aggregate:
+    - get: _FLATNAME_-_TAG_-image
+      trigger: true
+      passed: [_FLATNAME_-_TAG_-red]
+    - get: ca-src
+      trigger: true
+      passed: [_FLATNAME_-_TAG_-red]
+    - get: certificates
+      trigger: true
+      passed: [_FLATNAME_-_TAG_-red]
   - task: dockerfile
     file: ca-src/src/main/ci/build-docker.yaml
     params:
@@ -51,17 +53,18 @@
 
 - name: addca-_FLATNAME_-_TAG_-green
   public: true
-  serial: true
+  serial_groups: [ca-src,certificates]
   plan:
-  - get: addca-_FLATNAME_-_TAG_-image
-    trigger: true
-    passed: [_FLATNAME_-_TAG_-build]
-  - get: ca-src
-    trigger: true
-    passed: [certificates-unit,_FLATNAME_-_TAG_-build]
-  - get: certificates
-    trigger: true
-    passed: [certificates-unit,_FLATNAME_-_TAG_-build]
+  - aggregate:
+    - get: addca-_FLATNAME_-_TAG_-image
+      trigger: true
+      passed: [_FLATNAME_-_TAG_-build]
+    - get: ca-src
+      trigger: true
+      passed: [_FLATNAME_-_TAG_-build]
+    - get: certificates
+      trigger: true
+      passed: [_FLATNAME_-_TAG_-build]
   - task: test
     config:
       platform: linux
