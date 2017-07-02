@@ -37,10 +37,10 @@
       passed: [_FLATNAME_-_TAG_-red]
     - get: ca-src
       trigger: true
-      passed: [certificates-unit,_FLATNAME_-_TAG_-red]
+      passed: [_FLATNAME_-_TAG_-red]
     - get: certificates
       trigger: true
-      passed: [certificates-unit,_FLATNAME_-_TAG_-red]
+      passed: [_FLATNAME_-_TAG_-red]
   - task: dockerfile
     file: ca-src/src/main/ci/build-docker.yaml
     params:
@@ -61,10 +61,10 @@
       passed: [_FLATNAME_-_TAG_-build]
     - get: ca-src
       trigger: true
-      passed: [certificates-unit,_FLATNAME_-_TAG_-build]
+      passed: [_FLATNAME_-_TAG_-build]
     - get: certificates
       trigger: true
-      passed: [certificates-unit,_FLATNAME_-_TAG_-build]
+      passed: [_FLATNAME_-_TAG_-build]
   - task: test
     config:
       platform: linux
