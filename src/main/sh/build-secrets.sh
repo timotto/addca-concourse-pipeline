@@ -12,7 +12,9 @@ done >> "${build}/secrets.yaml"
 
 cat <<EOT >> "${build}/secrets.yaml"
 certificates-git: ${certificates_git}
+certificates-git-branch: ${certificates_git_branch}
 docker-images-git: ${docker_images_git}
+docker-images-git-branch: ${docker_images_git_branch}
 addca-git: ${addca_git}
 addca-git-branch: ${addca_git_branch}
 docker-registry-username: ${docker_registry_username}

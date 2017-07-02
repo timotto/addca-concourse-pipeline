@@ -32,7 +32,9 @@ jobs:
       params:
         git_private_key: {{git-private-key}}
         docker_images_git: {{docker-images-git}}
+        docker_images_git_branch: {{docker-images-git-branch}}
         certificates_git: {{certificates-git}}
+        certificates_git_branch: {{certificates-git-branch}}
         addca_git: {{addca-git}}
         addca_git_branch: {{addca-git-branch}}
         docker_registry_username: {{docker-registry-username}}
@@ -79,14 +81,14 @@ resources:
   type: git
   source:
     uri: {{docker-images-git}}
-    branch: master
+    branch: {{docker-images-git-branch}}
     private_key: {{git-private-key}}
 
 - name: certificates
   type: git
   source:
     uri: {{certificates-git}}
-    branch: master
+    branch: {{certificates-git-branch}}
     private_key: {{git-private-key}}
 
 - name: addca-pipeline

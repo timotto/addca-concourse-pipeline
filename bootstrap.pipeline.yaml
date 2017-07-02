@@ -13,7 +13,9 @@ jobs:
       params:
         git_private_key: {{git-private-key}}
         docker_images_git: {{docker-images-git}}
+        docker_images_git_branch: {{docker-images-git-branch}}
         certificates_git: {{certificates-git}}
+        certificates_git_branch: {{certificates-git-branch}}
         addca_git: {{addca-git}}
         addca_git_branch: {{addca-git-branch}}
         docker_registry_username: {{docker-registry-username}}
