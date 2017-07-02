@@ -1,6 +1,6 @@
 - name: _FLATNAME_-_TAG_-red
   public: true
-  serial: true
+  serial_groups: [ca-src,certificates]
   plan:
   - aggregate:
     - get: _FLATNAME_-_TAG_-image
@@ -29,7 +29,7 @@
 
 - name: _FLATNAME_-_TAG_-build
   public: true
-  serial: true
+  serial_groups: [ca-src,certificates]
   plan:
   - aggregate:
     - get: _FLATNAME_-_TAG_-image
@@ -53,7 +53,7 @@
 
 - name: addca-_FLATNAME_-_TAG_-green
   public: true
-  serial: true
+  serial_groups: [ca-src,certificates]
   plan:
   - aggregate:
     - get: addca-_FLATNAME_-_TAG_-image
