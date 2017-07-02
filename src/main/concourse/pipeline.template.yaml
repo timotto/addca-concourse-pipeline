@@ -3,10 +3,11 @@ jobs:
   public: true
   serial: true
   plan:
-  - get: ca-src
-    trigger: true
-  - get: docker-images
-    trigger: true
+  - aggregate:
+    - get: ca-src
+      trigger: true
+    - get: docker-images
+      trigger: true
   - task: test
     file: ca-src/src/main/ci/test-docker-images.yaml
 
@@ -14,34 +15,35 @@ jobs:
   public: true
   serial: true
   plan:
-  - get: ca-src
-    trigger: true
-    passed: [docker-images-unit]
-  - get: docker-images
-    trigger: true
-    passed: [docker-images-unit]
-  - task: build-pipeline
-    file: ca-src/src/main/ci/build-pipeline.yaml
-    params:
-      prefix: {{docker-registry-prefix}}
-  - task: build-secrets
-    file: ca-src/src/main/ci/build-secrets.yaml
-    params:
-      git_private_key: {{git-private-key}}
-      docker_images_git: {{docker-images-git}}
-      certificates_git: {{certificates-git}}
-      addca_git: {{addca-git}}
-      addca_git_branch: {{addca-git-branch}}
-      docker_registry_username: {{docker-registry-username}}
-      docker_registry_password: {{docker-registry-password}}
-      docker_registry_prefix: {{docker-registry-prefix}}
-      concourse_pipeline: {{concourse-pipeline}}
-      concourse_target: {{concourse-target}}
-      concourse_insecure: {{concourse-insecure}}
-      concourse_team: {{concourse-team}}
-      concourse_username: {{concourse-username}}
-      concourse_password: {{concourse-password}}
-
+  - aggregate:
+    - get: ca-src
+      trigger: true
+      passed: [docker-images-unit]
+    - get: docker-images
+      trigger: true
+      passed: [docker-images-unit]
+  - aggregate:
+    - task: build-pipeline
+      file: ca-src/src/main/ci/build-pipeline.yaml
+      params:
+        prefix: {{docker-registry-prefix}}
+    - task: build-secrets
+      file: ca-src/src/main/ci/build-secrets.yaml
+      params:
+        git_private_key: {{git-private-key}}
+        docker_images_git: {{docker-images-git}}
+        certificates_git: {{certificates-git}}
+        addca_git: {{addca-git}}
+        addca_git_branch: {{addca-git-branch}}
+        docker_registry_username: {{docker-registry-username}}
+        docker_registry_password: {{docker-registry-password}}
+        docker_registry_prefix: {{docker-registry-prefix}}
+        concourse_pipeline: {{concourse-pipeline}}
+        concourse_target: {{concourse-target}}
+        concourse_insecure: {{concourse-insecure}}
+        concourse_team: {{concourse-team}}
+        concourse_username: {{concourse-username}}
+        concourse_password: {{concourse-password}}
   - put: addca-pipeline
     params:
       pipelines:
@@ -55,10 +57,11 @@ jobs:
   public: true
   serial: true
   plan:
-  - get: ca-src
-    trigger: true
-  - get: certificates
-    trigger: true
+  - aggregate:
+    - get: ca-src
+      trigger: true
+    - get: certificates
+      trigger: true
   - task: test
     file: ca-src/src/main/ci/test-certificates.yaml
 
