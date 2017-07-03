@@ -1,0 +1,78 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: docker
+    tag: dind
+params:
+  IMAGE: iamge-name
+  TAG: latest
+  FLAVOR: alpine
+
+inputs:
+- name: ca-src
+- name: certificates
+outputs: 
+- name: assembly
+run:
+  path: sh
+  args:
+  - -iexc
+  - |
+    set
+    mount
+    sh ca-src/src/main/sh/build-dockerfile.sh > assembly/Dockerfile
+    mkdir -p assembly/ca
+    cp -R certificates/src/main/*.crt assembly/ca
+    #/usr/local/bin/dockerd-entrypoint.sh &
+    export container=docker
+    if ! mountpoint -q /sys/fs/cgroup; then
+      CGROUP=/cgroup
+      mkdir -p "$CGROUP"
+      if ! mountpoint -q "$CGROUP"; then
+        mount -n -t tmpfs -o uid=0,gid=0,mode=0755 cgroup $CGROUP || {
+          echo >&2 'Could not make a tmpfs mount. Did you use --privileged?'
+          exit 1
+        }
+      fi
+      for HIER in $(cut -d: -f2 /proc/1/cgroup); do
+        SUBSYSTEMS="${HIER%name=*}"
+        OHIER=$HIER
+        HIER="${HIER#*name=}"
+        mkdir -p "$CGROUP/$HIER"
+        if ! mountpoint -q "$CGROUP/$HIER"; then
+          mount -n -t cgroup -o "$OHIER" cgroup "$CGROUP/$HIER"
+        fi
+        if [ "$HIER" = 'cpuacct,cpu' ]; then
+          ln -s "$HIER" "$CGROUP/cpu,cpuacct"
+        fi
+        if [ "$SUBSYSTEMS" != "${SUBSYSTEMS//,/ }" ]; then
+          SUBSYSTEMS="${SUBSYSTEMS//,/ }"
+          for SUBSYS in $SUBSYSTEMS
+          do
+            ln -s "$CGROUP/$HIER" "$CGROUP/$SUBSYS"
+          done
+        fi
+      done
+    fi
+    if [ -d /sys/kernel/security ] && ! mountpoint -q /sys/kernel/security; then
+      mount -t securityfs none /sys/kernel/security || {
+        echo >&2 'Could not mount /sys/kernel/security.'
+        echo >&2 'AppArmor detection and --privileged mode might break.'
+      }
+    fi
+    if ! grep -q :devices: /proc/1/cgroup; then
+      echo >&2 'WARNING: the "devices" cgroup should be in its own hierarchy.'
+    fi
+    if ! grep -qw devices /proc/1/cgroup; then
+      echo >&2 'WARNING: it looks like the "devices" cgroup is not mounted.'
+    fi
+
+    dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=vfs &
+    # todo loop until $? of docker version == 0
+    sleep 3
+    docker -H unix:///var/run/docker.sock version
+    docker -H unix:///var/run/docker.sock build -t ${IMAGE}:${TAG} assembly/
+    docker -H unix:///var/run/docker.sock save --output=assembly/docker-image.tar ${IMAGE}:${TAG}
+    killall dockerd
+    echo done

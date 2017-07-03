@@ -40,14 +40,14 @@
       trigger: true
       passed: [_FLATNAME_-_TAG_-red]
   - task: dockerfile
-    file: ca-src/src/main/ci/build-docker.yaml
+    file: ca-src/src/main/ci/build-docker-image.yaml
     params:
       IMAGE: _NAME_
       TAG: _TAG_
       FLAVOR: _FLAVOR_
   - put: addca-_FLATNAME_-_TAG_-image
     params:
-      build: assembly
+      import_file: assembly/docker-image.tar
 
 - name: addca-_FLATNAME_-_TAG_-green
   public: true
