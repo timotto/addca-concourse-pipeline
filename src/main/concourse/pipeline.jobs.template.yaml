@@ -50,9 +50,9 @@
     params:
       build: assembly/
       build_args:
-        http_proxy: {{http_proxy}}
-        https_proxy: {{https_proxy}}
-        no_proxy: {{no_proxy}}
+        http_proxy: {{http-proxy}}
+        https_proxy: {{https-proxy}}
+        no_proxy: {{no-proxy}}
       #load_file: assembly/docker-image.tar
       #load_repository: _NAME_
       #load_tag: _TAG_
