@@ -31,3 +31,6 @@ http-proxy: ${http_proxy}
 https-proxy: ${https_proxy}
 no-proxy: ${no_proxy}
 EOT
+
+cat "${build}/secrets.yaml"
+hexdump -C < "${build}/secrets.yaml" || true
