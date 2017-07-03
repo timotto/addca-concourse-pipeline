@@ -48,7 +48,9 @@
       FLAVOR: _FLAVOR_
   - put: addca-_FLATNAME_-_TAG_-image
     params:
-      import_file: assembly/docker-image.tar
+      load_file: assembly/docker-image.tar
+      load_repository: _NAME_
+      load_tag: _TAG_
 
 - name: addca-_FLATNAME_-_TAG_-green
   public: true
