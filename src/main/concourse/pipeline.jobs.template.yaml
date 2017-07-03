@@ -40,7 +40,7 @@
       trigger: true
       passed: [_FLATNAME_-_TAG_-red]
   - task: dockerfile
-    file: ca-src/src/main/ci/build-docker-image.yaml
+    file: ca-src/src/main/ci/build-docker.yaml
     privileged: true
     params:
       IMAGE: _NAME_
@@ -48,9 +48,14 @@
       FLAVOR: _FLAVOR_
   - put: addca-_FLATNAME_-_TAG_-image
     params:
-      load_file: assembly/docker-image.tar
-      load_repository: _NAME_
-      load_tag: _TAG_
+      build: assembly/
+      build_args:
+        http_proxy: {{http_proxy}}
+        https_proxy: {{https_proxy}}
+        no_proxy: {{no_proxy}}
+      #load_file: assembly/docker-image.tar
+      #load_repository: _NAME_
+      #load_tag: _TAG_
 
 - name: addca-_FLATNAME_-_TAG_-green
   public: true
