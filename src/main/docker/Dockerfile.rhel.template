@@ -1,5 +1,9 @@
 FROM _SOURCE_
 
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
 COPY ca/* /etc/pki/ca-trust/source/anchors/
 
 RUN update-ca-trust

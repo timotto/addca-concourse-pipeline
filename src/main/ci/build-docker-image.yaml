@@ -25,6 +25,7 @@ run:
     mkdir -p assembly/ca
     cp -R certificates/src/main/*.crt assembly/ca
     #/usr/local/bin/dockerd-entrypoint.sh &
+    killdie() { killall dockerd ; exit 1 ; }
     export container=docker
     if ! mountpoint -q /sys/fs/cgroup; then
       CGROUP=/cgroup
@@ -71,8 +72,7 @@ run:
     dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=vfs &
     # todo loop until $? of docker version == 0
     sleep 3
-    docker -H unix:///var/run/docker.sock version
-    docker -H unix:///var/run/docker.sock build -t ${IMAGE}:${TAG} assembly/
-    docker -H unix:///var/run/docker.sock save --output=assembly/docker-image.tar ${IMAGE}:${TAG}
+    docker version || killdie
+    docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy --build-arg no_proxy=$no_proxy -t ${IMAGE}:${TAG} assembly/ || killdie
+    docker save --output=assembly/docker-image.tar ${IMAGE}:${TAG} || killdie
     killall dockerd
-    echo done

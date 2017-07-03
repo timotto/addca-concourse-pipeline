@@ -1,5 +1,9 @@
 FROM _SOURCE_
 
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
 RUN apt-get update && apt-get install -y ca-certificates
 
 COPY ca/* /usr/local/share/ca-certificates/

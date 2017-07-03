@@ -1,5 +1,9 @@
 FROM _SOURCE_
 
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
 RUN apk update && apk add ca-certificates
 
 COPY ca/* /usr/local/share/ca-certificates/
