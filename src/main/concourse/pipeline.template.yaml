@@ -47,9 +47,9 @@ jobs:
         concourse_team: {{concourse-team}}
         concourse_username: {{concourse-username}}
         concourse_password: {{concourse-password}}
-        http_proxy: {{http_proxy}}
-        https_proxy: {{https_proxy}}
-        no_proxy: {{no_proxy}}
+        http_proxy: {{http-proxy}}
+        https_proxy: {{https-proxy}}
+        no_proxy: {{no-proxy}}
   - put: addca-pipeline
     params:
       pipelines:

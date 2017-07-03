@@ -27,7 +27,7 @@ concourse-team: ${concourse_team}
 concourse-username: ${concourse_username}
 concourse-password: ${concourse_password}
 concourse-pipeline: ${concourse_pipeline}
-http_proxy: {{http_proxy}}
-https_proxy: {{https_proxy}}
-no_proxy: {{no_proxy}}
+http-proxy: ${http_proxy}
+https-proxy: ${https_proxy}
+no-proxy: ${no_proxy}
 EOT
