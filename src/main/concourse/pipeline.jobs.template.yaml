@@ -41,6 +41,7 @@
       passed: [_FLATNAME_-_TAG_-red]
   - task: dockerfile
     file: ca-src/src/main/ci/build-docker-image.yaml
+    privileged: true
     params:
       IMAGE: _NAME_
       TAG: _TAG_
