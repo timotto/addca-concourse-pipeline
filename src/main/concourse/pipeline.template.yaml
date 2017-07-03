@@ -37,6 +37,7 @@ jobs:
         certificates_git_branch: {{certificates-git-branch}}
         addca_git: {{addca-git}}
         addca_git_branch: {{addca-git-branch}}
+        docker_registry_email: {{docker-registry-email}}
         docker_registry_username: {{docker-registry-username}}
         docker_registry_password: {{docker-registry-password}}
         docker_registry_prefix: {{docker-registry-prefix}}

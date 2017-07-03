@@ -17,6 +17,7 @@ docker-images-git: ${docker_images_git}
 docker-images-git-branch: ${docker_images_git_branch}
 addca-git: ${addca_git}
 addca-git-branch: ${addca_git_branch}
+docker-registry-email: ${docker_registry_email}
 docker-registry-username: ${docker_registry_username}
 docker-registry-password: ${docker_registry_password}
 docker-registry-prefix: ${docker_registry_prefix}
