@@ -73,6 +73,6 @@ run:
     # todo loop until $? of docker version == 0
     sleep 3
     docker version || killdie
-    docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy --build-arg no_proxy=$no_proxy -t ${IMAGE}:${TAG} assembly/ || killdie
+    docker build --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$https_proxy" --build-arg no_proxy="$no_proxy" -t ${IMAGE}:${TAG} assembly/ || killdie
     docker save --output=assembly/docker-image.tar ${IMAGE}:${TAG} || killdie
     killall dockerd
