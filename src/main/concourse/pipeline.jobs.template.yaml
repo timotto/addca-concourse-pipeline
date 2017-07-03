@@ -68,6 +68,7 @@
       image_resource:
         type: docker-image
         source:
+          email: {{docker-registry-email}}
           username: {{docker-registry-username}}
           password: {{docker-registry-password}}
           repository: _PREFIX__NAME_
