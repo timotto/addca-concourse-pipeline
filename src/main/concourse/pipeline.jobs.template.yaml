@@ -13,11 +13,7 @@
   - task: test
     config:
       platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: _NAME_
-          tag: _TAG_
+      image: _FLATNAME_-_TAG_-image
       inputs:
       - name: ca-src
       - name: certificates
@@ -65,14 +61,7 @@
   - task: test
     config:
       platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          email: {{docker-registry-email}}
-          username: {{docker-registry-username}}
-          password: {{docker-registry-password}}
-          repository: _PREFIX__NAME_
-          tag: _TAG_
+      image: addca-_FLATNAME_-_TAG_-image
       inputs:
       - name: ca-src
       - name: certificates
