@@ -5,3 +5,5 @@ RUN apt-get update && apt-get install -y ca-certificates
 COPY ca/* /usr/local/share/ca-certificates/
 
 RUN update-ca-certificates
+
+ENV NODE_EXTRA_CA_ERTS=/etc/ssl/certs/ca-certificates.crt
